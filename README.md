@@ -39,7 +39,7 @@ Bem-vindo ao Simulador de Help Desk, uma API desenvolvida em Java usando Spring 
 3.  **Compile e execute o projeto:**
     - Se você estiver usando o IntelliJ como IDEA:
     ```bash
-    No menu superir e clique no botão play verde,
+    No menu superir, clique no botão play(verde),
     seu projeto deve ser complidado e dado start.
     ```
     - Se você estiver no terminal siga esse comando:
@@ -64,3 +64,49 @@ Bem-vindo ao Simulador de Help Desk, uma API desenvolvida em Java usando Spring 
 ## Contato
 
 **Para mais informações, entre em contato pelo e-mail: gui.vini.lincoln@gmail.com**
+
+## Extra: Pre-Commit
+1. **Instalado o pre-commit:**
+    ```bash
+    brew install pre-commit
+   pre-commit --version
+    ```
+   se tudo ocorrer como plenajado, você ira receber a versao atual do pre-commit
+
+
+2. Navegue até o diretório do seu projeto:
+    ```bash
+      cd /caminho/para/seu/projeto
+    ```
+
+3. Crie um arquivo de configuração .pre-commit-config.yaml ou verifique se existe:
+    ```bash
+      repos:
+        - repo: https://github.com/pre-commit/pre-commit-hooks
+        rev: v4.0.1  # Use a versão desejada
+        hooks:
+        - id: trailing-whitespace
+        - id: end-of-file-fixer
+    ```
+   Dentro desse arquivo, deve conter algo parecido com isso, nesse caso so estamos utilziando dois hooks:
+
+   **Trim Trailing Whitespace:** Esse hook remove espaços em branco desnecessários no final das linhas de seus arquivos.
+
+   **Fix End of Files:** Este hook garante que seus arquivos terminem com uma linha em branco conforme convencionado em muitos projetos.
+
+
+4. Instale os ganchos do pre-commit:
+    ```bash
+      pre-commit install
+    ```
+   Isso configurará o gancho pre-commit para rodar automaticamente antes dos commits.
+
+
+5. Testar o Gancho:
+    ```bash
+      git add .
+      git commit -m "Teste do pre-commit"
+    ```
+    O pre-commit deve ser executado automaticamente e verificar os arquivos conforme as regras definidas no .pre-commit-config.yaml.
+
+    Ao seguir esses passos, você estará utilizando o pre-commit com sucesso em seus projetos.
