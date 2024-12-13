@@ -1,0 +1,24 @@
+version: '3.8'  # Versão do docker-compose
+
+services:
+  db:
+    image: mysql:8.0  # A imagem do MySQL; você pode escolher outra versão se preferir
+    container_name: mysql_db  # Nome do contêiner
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass  # Senha do usuário root
+      MYSQL_DATABASE: helpdesk_db    # Nome do banco de dados a ser criado
+      MYSQL_USER: user               # Usuário padrão
+      MYSQL_PASSWORD: userpass       # Senha para o usuário padrão
+    ports:
+      - "3306:3306"  # Mapeamento de portas: Host:Contêiner
+    volumes:
+      - db_data:/var/lib/mysql  # Volumes para persistência de dados
+    networks:
+      - my_network
+
+volumes:
+  db_data:  # Nome do volume para persistir dados do MySQL
+
+networks:
+  my_network:
+    driver: bridge
