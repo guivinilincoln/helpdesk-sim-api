@@ -1,4 +1,4 @@
-package br.com.meli.helpdesksimuladorapi.controller;
+package br.com.meli.helpdesksimapi.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
