@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>br.com.meli</groupId>
-    <artifactId>helpdesk-simulador-api</artifactId>
+    <artifactId>helpdesk-sim-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>helpdesk-simulador-api</name>
-    <description>helpdesk-simulador-api</description>
+    <name>helpdesk-sim-api</name>
+    <description>Simulador de Help Desk para projeto MELI</description>
     <url/>
     <licenses>
         <license/>
