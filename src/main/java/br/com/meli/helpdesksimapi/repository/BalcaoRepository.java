@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface BalcaoRepository extends JpaRepository<Balcao, Long> {
-    List<Balcao> buscarPorUsuarioCustomerId(String nome);
+    List<Balcao> findByAtendenteAtendenteId(Long atendenteId);
 }

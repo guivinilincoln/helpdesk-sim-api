@@ -29,8 +29,8 @@ public class BalcaoService {
         balcaoRepository.deleteById(id);
     }
 
-    public List<Balcao> buscarBalcaoPorCustomerId(String customerId) {
-        balcaoRepository.buscarPorUsuarioCustomerId(customerId);
+    public List<Balcao> buscarBalcaoPorAtendenteId(Long atentendeId) {
+        balcaoRepository.findByAtendenteAtendenteId(atentendeId);
         return balcaoRepository.findAll();
     }
 }

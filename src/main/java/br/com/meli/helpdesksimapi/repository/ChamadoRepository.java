@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ChamadoRepository extends JpaRepository<Chamado, Long> {
-    Page<Chamado> buscarPorUsuarioCustomerId(String customerId, Pageable pageable);
+    Page<Chamado> findByUsuarioCustomerId(String customerId, Pageable pageable);
 
 }

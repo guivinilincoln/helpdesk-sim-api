@@ -36,6 +36,6 @@ public class ChamadoService {
 
     public Page<Chamado> buscarChamadoPorCustomerId(String customerId, int page, int size){
         PageRequest pageRequest = PageRequest.of(page, size);
-        return chamadoRepository.buscarPorUsuarioCustomerId(customerId, pageRequest);
+        return chamadoRepository.findByUsuarioCustomerId(customerId, pageRequest);
     }
 }

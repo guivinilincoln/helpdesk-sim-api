@@ -22,7 +22,7 @@ public class UsuarioService {
     }
 
     public List<Usuario> buscarPorCustumId(String custumId) {
-         usuarioRepository.buscarUsuarioCustomerId(custumId);
+         usuarioRepository.findByCustomerId(custumId);
         return usuarioRepository.findAll();
     }
 
