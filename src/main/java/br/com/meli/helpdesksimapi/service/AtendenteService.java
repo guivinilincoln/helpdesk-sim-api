@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AtendenteService {
@@ -29,8 +30,14 @@ public class AtendenteService {
         return atendenteRepository.save(atendente);
     }
 
-    public void deletarAtendente(Atendente atendente) {
-        atendenteRepository.delete(atendente);
+    public boolean deletarAtendente(Long id) {
+        Optional<Atendente> atendente = atendenteRepository.findById(id);
+        if (atendente.isPresent()) {
+            atendenteRepository.delete(atendente.get());
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
