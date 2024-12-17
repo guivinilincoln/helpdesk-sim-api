@@ -16,11 +16,9 @@ public class Atendente {
     @NotNull(message = "O nome não pode ser nulo")
     private String nome;
 
-    // Construtor padrão (necessário para o JPA)
     public Atendente() {
     }
 
-    // Getters e Setters
 
     public Long getAtendenteId() {
         return atendenteId;
@@ -37,8 +35,6 @@ public class Atendente {
     public void setNome(String nome) {
         this.nome = nome;
     }
-
-    // toString, equals e hashCode podem ser úteis dependendo do seu uso, mas são opcionais.
 
     @Override
     public String toString() {
