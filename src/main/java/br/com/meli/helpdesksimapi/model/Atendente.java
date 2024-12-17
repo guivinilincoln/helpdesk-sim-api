@@ -11,7 +11,7 @@ public class Atendente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long atendenteiId;
+    private Long atendenteId;
 
     @NotNull
     private String nome;
