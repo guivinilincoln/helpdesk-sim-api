@@ -13,7 +13,7 @@ public class Usuario {
     private Long usuarioId;
 
     @NotNull
-    private String custumerId;
+    private String customerId;
 
     @NotNull
     private String nomeUsuario;
