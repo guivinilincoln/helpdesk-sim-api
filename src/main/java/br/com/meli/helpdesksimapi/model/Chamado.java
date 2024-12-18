@@ -24,6 +24,7 @@ public class Chamado {
     private Status status;
 
     @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dataChamado;
 
     private Date dataResolucao;
@@ -40,6 +41,7 @@ public class Chamado {
 
     // Construtor padrão
     public Chamado() {
+        this.dataChamado = new Date();
     }
 
     // Getters e Setters
