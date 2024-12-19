@@ -2,6 +2,8 @@ package br.com.meli.helpdesksimapi.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -11,6 +13,7 @@ public class Balcao {
     private Long balcaoId;
 
     @NotNull(message = "O nome do balcão não deve ser nulo")
+    @NotBlank(message = "O nome não pode ser nulo ou vazio")
     private String nomeBalcao;
 
     @ManyToOne

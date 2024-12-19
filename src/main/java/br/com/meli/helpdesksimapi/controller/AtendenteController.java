@@ -47,7 +47,7 @@ public class AtendenteController {
     public ResponseEntity<Atendente> alterarAtendente(@PathVariable Long id, @RequestBody Atendente atendente) {
         atendente.setAtendenteId(id);
         Atendente atualizado = atendenteService.alterarAtendente(atendente);
-        return ResponseEntity.ok(atualizado);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(atualizado);
     }
 
 }
