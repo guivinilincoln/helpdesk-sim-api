@@ -5,6 +5,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 
 @Entity
 public class Maquininha {
@@ -13,7 +15,8 @@ public class Maquininha {
     private Long deviceId;
 
     @NotNull(message = "O número serial não deve ser nulo")
-    private Long serialNumber;
+    @Size(max = 10, message = "O número serial deve ter no máximo 10 caracteres")
+    private String serialNumber;
 
     public Maquininha() {
     }
@@ -26,11 +29,11 @@ public class Maquininha {
         this.deviceId = deviceId;
     }
 
-    public Long getSerialNumber() {
+    public String getSerialNumber() {
         return serialNumber;
     }
 
-    public void setSerialNumber(Long serialNumber) {
+    public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 

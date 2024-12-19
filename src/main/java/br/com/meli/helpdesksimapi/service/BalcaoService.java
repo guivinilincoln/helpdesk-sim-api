@@ -35,7 +35,7 @@ public class BalcaoService {
     }
     public Balcao alterarBalcao(Balcao balcao) {
         if(!balcaoRepository.existsById(balcao.getBalcaoId())){
-            throw new ResourceNotFoundException("Balção com o ID " + balcao.getBalcaoId() + "não encontrado para o alterar");
+            throw new ResourceNotFoundException("Balção com o ID " + balcao.getBalcaoId() + " não encontrado para o alterar");
         }
         return balcaoRepository.save(balcao);
     }

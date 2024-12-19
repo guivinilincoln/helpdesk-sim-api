@@ -4,6 +4,7 @@ import br.com.meli.helpdesksimapi.dto.ErroResponse;
 import br.com.meli.helpdesksimapi.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,6 +29,7 @@ public class GlobalExceptionHandler {
         ErroResponse errorResponse = new ErroResponse(HttpStatus.BAD_REQUEST.value(), errorMessage);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<ErroResponse> handleInvalidFormatException(InvalidFormatException e) {
