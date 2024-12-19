@@ -33,7 +33,6 @@ public class MaquininhaController {
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
     }
-
     @GetMapping
     public List<Maquininha> listarMaquininhas() {
         return maquininhaService.listarMaquininhas();
