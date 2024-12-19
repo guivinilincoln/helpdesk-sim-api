@@ -2,6 +2,7 @@ package br.com.meli.helpdesksimapi.service;
 
 import br.com.meli.helpdesksimapi.model.Balcao;
 import br.com.meli.helpdesksimapi.model.Chamado;
+import br.com.meli.helpdesksimapi.model.Maquininha;
 import br.com.meli.helpdesksimapi.model.Status;
 import br.com.meli.helpdesksimapi.repository.BalcaoRepository;
 import br.com.meli.helpdesksimapi.repository.ChamadoRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,8 +25,43 @@ public class ChamadoService {
     @Autowired
     private BalcaoRepository balcaoRepository;
 
+    @Autowired
+    private MaquininhaService maquininhaService;
 
-    public Chamado criarChamado(Chamado chamado) {
+
+    public Chamado criarChamado(Chamado chamado) throws AccessDeniedException {
+        // Verificar se a Maquininha existe
+        Maquininha maquininha = maquininhaService.buscarMaquininhaPorId(chamado.getMaquininha().getDeviceId());
+        if (maquininha == null) {
+            throw new IllegalArgumentException("A Maquininha especificada não existe.");
+        }
+        chamado.setMaquininha(maquininha);
+
+        // Verificar se o próprio usuário já tem um chamado aberto para este número de série
+        List<Chamado> chamadosParaUsuarioAtual = chamadoRepository.findByUsuarioAndMaquininhaAndStatusNot(
+                chamado.getUsuario(),
+                maquininha,
+                Status.CONCLUIDO
+        );
+
+        if (!chamadosParaUsuarioAtual.isEmpty()) {
+            throw new IllegalArgumentException("Já existe um chamado aberto para este usuário e número de série.");
+        }
+
+        // Verificar chamados não concluídos para o mesmo serialNumber de outro usuário
+        List<Chamado> chamadosParaSerialNumber = chamadoRepository.findByMaquininhaSerialNumberAndStatusNot(
+                maquininha.getSerialNumber(),
+                Status.CONCLUIDO
+        );
+
+        for (Chamado c : chamadosParaSerialNumber) {
+            if (!c.getUsuario().equals(chamado.getUsuario())) {
+                // Se há chamado em andamento para outro usuário
+                throw new AccessDeniedException("Outro usuário já possui um chamado em atendimento para este número serial.");
+            }
+        }
+
+
         if (chamado.getDataChamado() == null) {
             chamado.setDataChamado(new Date());
         }

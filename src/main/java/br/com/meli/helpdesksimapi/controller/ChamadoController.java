@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class ChamadoController {
     private ChamadoService chamadoService;
 
     @PostMapping
-    public ResponseEntity<Chamado> criarChamado(@Valid @RequestBody Chamado chamado) {
+    public ResponseEntity<Chamado> criarChamado(@Valid @RequestBody Chamado chamado) throws AccessDeniedException {
         Chamado criado = chamadoService.criarChamado(chamado);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
