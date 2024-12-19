@@ -10,5 +10,4 @@ import java.util.List;
 
 @Repository
 public interface BalcaoRepository extends JpaRepository<Balcao, Long> {
-    List<Balcao> findByAtendenteAtendenteId(Long atendenteId);
 }

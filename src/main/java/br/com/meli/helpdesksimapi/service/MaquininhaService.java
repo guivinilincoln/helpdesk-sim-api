@@ -1,7 +1,9 @@
 package br.com.meli.helpdesksimapi.service;
 
+import br.com.meli.helpdesksimapi.exception.ResourceNotFoundException;
 import br.com.meli.helpdesksimapi.model.Maquininha;
 import br.com.meli.helpdesksimapi.repository.MaquininhaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,9 @@ public class MaquininhaService {
     @Autowired
     private MaquininhaRepository maquininhaRepository;
 
-    public Maquininha criarMaquininha(Maquininha maquininha) {
+    @Transactional
+    public Maquininha criarMaquininha(Maquininha maquininha){
+        verificarSerialNumber(maquininha.getSerialNumber());
         return maquininhaRepository.save(maquininha);
     }
 
@@ -23,20 +27,27 @@ public class MaquininhaService {
     }
 
     public Maquininha buscarMaquininhaPorId(Long id) {
-        return maquininhaRepository.findById(id).orElse(null);
+        return maquininhaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Maquininha com ID " + id + " não encontrado"));
     }
 
     public Maquininha alterarMaquinha(Maquininha maquininha) {
+        if(!maquininhaRepository.existsById(maquininha.getDeviceId())){
+            throw new ResourceNotFoundException("Maquininha com ID " + maquininha.getDeviceId()+ " não encontrado para atualização");
+        }
         return maquininhaRepository.save(maquininha);
     }
 
-    public boolean deletarMaquininha(Long id) {
-        Optional<Maquininha> maquininha = maquininhaRepository.findById(id);
-        if( maquininha.isPresent() ) {
-            maquininhaRepository.deleteById(id);
-            return true;
-        }else {
-            return false;
+    public void deletarMaquininha(Long id) {
+        if (!maquininhaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Maquininha com ID " + id + " não encontrado");
+        }
+        maquininhaRepository.deleteById(id);
+    }
+
+    private void verificarSerialNumber(String serialNumber) {
+        if (maquininhaRepository.findBySerialNumber(serialNumber).isPresent()) {
+            throw new IllegalArgumentException("O número serial já existe.");
         }
     }
 }

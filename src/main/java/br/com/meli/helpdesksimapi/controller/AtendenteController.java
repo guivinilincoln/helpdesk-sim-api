@@ -1,7 +1,10 @@
 package br.com.meli.helpdesksimapi.controller;
 
+import br.com.meli.helpdesksimapi.dto.SuccessResponse;
 import br.com.meli.helpdesksimapi.model.Atendente;
+import br.com.meli.helpdesksimapi.model.Balcao;
 import br.com.meli.helpdesksimapi.service.AtendenteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +23,31 @@ public class AtendenteController {
         return atendenteService.listarAtendentes();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<SuccessResponse> buscarPorId(@PathVariable Long id) {
+        Atendente atendente = atendenteService.buscarAtendentePorId(id);
+        SuccessResponse<Atendente> response = new SuccessResponse<>(HttpStatus.OK.value(), "Valores retornados com sucesso!", atendente);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping
-    public ResponseEntity<Atendente> criarAtendente(@RequestBody Atendente atendente) {
+    public ResponseEntity<SuccessResponse> criarAtendente(@Valid @RequestBody Atendente atendente) {
         Atendente criado = atendenteService.criarAtendente(atendente);
-        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
+        SuccessResponse<Atendente> response = new SuccessResponse<>(HttpStatus.CREATED.value(), "Criado com sucesso!", criado);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Atendente> deletarAtendente(@PathVariable Long id) {
-        boolean foiRemovido = atendenteService.deletarAtendente(id);
-        if (!foiRemovido) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<Void> deletarAtendente(@PathVariable Long id) {
+        atendenteService.deletarAtendente(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Atendente> alterarAtendente(@PathVariable Long id, @RequestBody Atendente atendente) {
+        atendente.setAtendenteId(id);
+        Atendente atualizado = atendenteService.alterarAtendente(atendente);
+        return ResponseEntity.status(HttpStatus.OK.value()).body(atualizado);
     }
 
 }
