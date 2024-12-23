@@ -1,15 +1,12 @@
 package br.com.meli.helpdesksimapi.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-
 @Entity
 public class Maquininha {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long deviceId;
@@ -17,6 +14,10 @@ public class Maquininha {
     @NotNull(message = "O número serial não deve ser nulo")
     @Size(max = 10, message = "O número serial deve ter no máximo 10 caracteres")
     private String serialNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "usuarioId", nullable = false)
+    private Usuario usuario;
 
     public Maquininha() {
     }
@@ -37,11 +38,20 @@ public class Maquininha {
         this.serialNumber = serialNumber;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     @Override
     public String toString() {
         return "Maquininha{" +
                 "deviceId=" + deviceId +
                 ", serialNumber=" + serialNumber +
+                ", usuario=" + (usuario != null ? usuario.getUsuarioId() : null) +
                 '}';
     }
 
