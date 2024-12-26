@@ -1,11 +1,12 @@
 package br.com.meli.helpdesksimapi.controller;
 
+import br.com.meli.helpdesksimapi.dto.AtendenteDTO;
 import br.com.meli.helpdesksimapi.dto.SuccessResponse;
-import br.com.meli.helpdesksimapi.model.Atendente;
-import br.com.meli.helpdesksimapi.model.Balcao;
 import br.com.meli.helpdesksimapi.service.AtendenteService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,27 +14,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/atendentes")
+@RequestMapping("/v1/api/atendentes")
+@RequiredArgsConstructor
 public class AtendenteController {
-    @Autowired
-    private AtendenteService atendenteService;
+
+    private final AtendenteService atendenteService;
 
     @GetMapping
-    public List<Atendente> listarAtendentes() {
-        return atendenteService.listarAtendentes();
+    public ResponseEntity<Page<AtendenteDTO>> listarAtendentes(Pageable pageable) {
+        Page<AtendenteDTO> paginatedResult = atendenteService.listarAtendentes(pageable);
+        return ResponseEntity.ok(paginatedResult);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SuccessResponse> buscarPorId(@PathVariable Long id) {
-        Atendente atendente = atendenteService.buscarAtendentePorId(id);
-        SuccessResponse<Atendente> response = new SuccessResponse<>(HttpStatus.OK.value(), "Valores retornados com sucesso!", atendente);
+    public ResponseEntity<SuccessResponse<AtendenteDTO>> buscarPorId(@PathVariable Long id) {
+        AtendenteDTO atendenteDTO = atendenteService.buscarAtendentePorId(id);
+        SuccessResponse<AtendenteDTO> response = new SuccessResponse<>(HttpStatus.OK.value(), "Valores retornados com sucesso!", atendenteDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<SuccessResponse> criarAtendente(@Valid @RequestBody Atendente atendente) {
-        Atendente criado = atendenteService.criarAtendente(atendente);
-        SuccessResponse<Atendente> response = new SuccessResponse<>(HttpStatus.CREATED.value(), "Criado com sucesso!", criado);
+    public ResponseEntity<SuccessResponse<AtendenteDTO>> criarAtendente(@Valid @RequestBody AtendenteDTO atendenteDTO) {
+        AtendenteDTO criado = atendenteService.criarAtendente(atendenteDTO);
+        SuccessResponse<AtendenteDTO> response = new SuccessResponse<>(HttpStatus.CREATED.value(), "Criado com sucesso!", criado);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -44,10 +47,10 @@ public class AtendenteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Atendente> alterarAtendente(@PathVariable Long id, @RequestBody Atendente atendente) {
-        atendente.setAtendenteId(id);
-        Atendente atualizado = atendenteService.alterarAtendente(atendente);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(atualizado);
+    public ResponseEntity<AtendenteDTO> alterarAtendente(@PathVariable Long id, @Valid @RequestBody AtendenteDTO atendenteDTO) {
+        atendenteDTO.setAtendenteId(id);
+        AtendenteDTO atualizado = atendenteService.alterarAtendente(atendenteDTO);
+        return ResponseEntity.ok(atualizado);
     }
 
 }
