@@ -1,5 +1,3 @@
-version: '3.8'  # Versão do docker-compose
-
 services:
   db:
     image: mysql:8.0  # A imagem do MySQL; você pode escolher outra versão se preferir

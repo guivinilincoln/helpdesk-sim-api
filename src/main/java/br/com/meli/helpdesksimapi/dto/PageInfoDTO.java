@@ -1,17 +1,15 @@
 package br.com.meli.helpdesksimapi.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
+@Data
 @AllArgsConstructor
-public class PagedResponseDTO <T>{
+public class PageInfoDTO<T> {
     private List<T> content;
-    private int pageNumber;
-    private int pageSize;
-    private long totalElements;
     private int totalPages;
+    private long totalElements;
 
 }

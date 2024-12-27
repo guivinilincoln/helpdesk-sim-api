@@ -1,53 +1,51 @@
 package br.com.meli.helpdesksimapi.service;
 
+import br.com.meli.helpdesksimapi.dto.UsuarioDTO;
 import br.com.meli.helpdesksimapi.exception.ResourceNotFoundException;
+import br.com.meli.helpdesksimapi.mapper.UsuarioMapper;
 import br.com.meli.helpdesksimapi.model.Usuario;
 import br.com.meli.helpdesksimapi.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
-    public Usuario salvar(Usuario usuario) {
-        verificarCustumerId(usuario.getCustomerId());
-        return usuarioRepository.save(usuario);
+    public UsuarioDTO criarUsuario(UsuarioDTO usuarioDTO) {
+        Usuario usuario = UsuarioMapper.toEntity(usuarioDTO);
+        Usuario salvo = usuarioRepository.save(usuario);
+        return UsuarioMapper.toDTO(salvo);
     }
 
-
-    public List<Usuario> listarUsuarios() {
-        return usuarioRepository.findAll();
+    public Page<UsuarioDTO> listarUsuarios(Pageable pageable) {
+        return usuarioRepository.findAll(pageable)
+                .map(UsuarioMapper::toDTO);
     }
 
-    public Usuario buscarPorId(Long id) {
-        return usuarioRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario com ID " + id + " Não encontrado"));
+    public UsuarioDTO buscarUsuarioPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com o ID " + id + " não encontrado"));
+        return UsuarioMapper.toDTO(usuario);
     }
 
-
-    public Usuario atualizarUsuario(Usuario usuario) {
-       if(!usuarioRepository.existsById(usuario.getUsuarioId())){
-           throw new ResourceNotFoundException("Usuario com ID " + usuario.getUsuarioId()+ " não encontrato para ataulização");
-       }
-       return usuarioRepository.save(usuario);
-    }
-
-    public void removerUsaurio(Long id) {
-        if (!usuarioRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Usuario com ID " + id + " não encontrado");
+    public UsuarioDTO alterarUsuario(UsuarioDTO usuarioDTO) {
+        if (!usuarioRepository.existsById(usuarioDTO.getUsuarioId())) {
+            throw new ResourceNotFoundException("Usuário com o ID " + usuarioDTO.getUsuarioId() + " não encontrado para alterar");
         }
+        Usuario usuario = UsuarioMapper.toEntity(usuarioDTO);
+        Usuario salvo = usuarioRepository.save(usuario);
+        return UsuarioMapper.toDTO(salvo);
+    }
+
+    public UsuarioDTO deletarUsuario(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário com o ID " + id + " não encontrado"));
         usuarioRepository.deleteById(id);
+        return UsuarioMapper.toDTO(usuario);
     }
-
-    private void verificarCustumerId(String customerId) {
-        if(usuarioRepository.findByCustomerId(customerId).isPresent()) {
-            throw new IllegalArgumentException("O custumerId já existe.");
-        }
-    }
-
 }

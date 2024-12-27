@@ -1,47 +1,61 @@
 package br.com.meli.helpdesksimapi.service;
 
+import br.com.meli.helpdesksimapi.dto.BalcaoDTO;
 import br.com.meli.helpdesksimapi.exception.ResourceNotFoundException;
+import br.com.meli.helpdesksimapi.mapper.BalcaoMapper;
 import br.com.meli.helpdesksimapi.model.Atendente;
 import br.com.meli.helpdesksimapi.model.Balcao;
 import br.com.meli.helpdesksimapi.repository.AtendenteRepository;
 import br.com.meli.helpdesksimapi.repository.BalcaoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 public class BalcaoService {
 
-    @Autowired
-    private BalcaoRepository balcaoRepository;
+    private final BalcaoRepository balcaoRepository;
+    private final AtendenteRepository atendenteRepository;
 
-    @Autowired
-    private AtendenteRepository atendenteRepository;
+    public BalcaoDTO criarBalcao(BalcaoDTO balcaoDTO) {
+        Balcao balcao = BalcaoMapper.toEntity(balcaoDTO);
 
-    public Balcao criarBalcao(Balcao balcao) {
-        Atendente atendente = atendenteRepository.findById(balcao.getAtendente().getAtendenteId())
-                .orElseThrow(() -> new ResourceNotFoundException("Atendente não encontrado"));
-        balcao.setAtendente(atendente);
-        return balcaoRepository.save(balcao);
-    }
-    public List<Balcao> listarBalcoes() {
-        return balcaoRepository.findAll();
-    }
-    public Balcao buscarBalcaoPorId(Long id) {
-        return balcaoRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Balção com o ID " + id + " não encontrado"));
-    }
-    public Balcao alterarBalcao(Balcao balcao) {
-        if(!balcaoRepository.existsById(balcao.getBalcaoId())){
-            throw new ResourceNotFoundException("Balção com o ID " + balcao.getBalcaoId() + " não encontrado para o alterar");
+        if (balcao.getAtendente() != null) {
+            Atendente atendente = atendenteRepository.findById(balcao.getAtendente().getAtendenteId())
+                    .orElseGet(() -> atendenteRepository.save(balcao.getAtendente()));
+            balcao.setAtendente(atendente);
         }
-        return balcaoRepository.save(balcao);
+
+        Balcao salvo = balcaoRepository.save(balcao);
+        return BalcaoMapper.toDTO(salvo);
     }
-    public void deletarBalcao(Long id) {
-       if (!balcaoRepository.existsById(id)) {
-           throw new ResourceNotFoundException("Balcão com ID " + id + " não encontrado");
-       }
-       balcaoRepository.deleteById(id);
+
+    public Page<BalcaoDTO> listarBalcoes(Pageable pageable) {
+        return balcaoRepository.findAll(pageable)
+                .map(BalcaoMapper::toDTO);
+    }
+
+    public BalcaoDTO buscarBalcaoPorId(Long id) {
+        Balcao balcao = balcaoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Balcão com o ID " + id + " não encontrado"));
+        return BalcaoMapper.toDTO(balcao);
+    }
+
+    public BalcaoDTO alterarBalcao(BalcaoDTO balcaoDTO) {
+        if (!balcaoRepository.existsById(balcaoDTO.getBalcaoId())) {
+            throw new ResourceNotFoundException("Balcão com o ID " + balcaoDTO.getBalcaoId() + " não encontrado para alterar");
+        }
+        Balcao balcao = BalcaoMapper.toEntity(balcaoDTO);
+        Balcao salvo = balcaoRepository.save(balcao);
+        return BalcaoMapper.toDTO(salvo);
+    }
+
+    public BalcaoDTO deletarBalcao(Long id) {
+        Balcao balcao = balcaoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Balcão com o ID " + id + " não encontrado"));
+        balcaoRepository.deleteById(id);
+        return BalcaoMapper.toDTO(balcao);
     }
 }

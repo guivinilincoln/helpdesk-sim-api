@@ -1,60 +1,62 @@
 package br.com.meli.helpdesksimapi.controller;
 
-import br.com.meli.helpdesksimapi.dto.ErroResponse;
-import br.com.meli.helpdesksimapi.dto.SuccessResponse;
-import br.com.meli.helpdesksimapi.model.Atendente;
-import br.com.meli.helpdesksimapi.model.Usuario;
+import br.com.meli.helpdesksimapi.dto.PageInfoDTO;
+import br.com.meli.helpdesksimapi.dto.SuccessResponseDTO;
+import br.com.meli.helpdesksimapi.dto.UsuarioDTO;
 import br.com.meli.helpdesksimapi.service.UsuarioService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/v1/api/usuarios")
+@RequiredArgsConstructor
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<?> criarUsuario(@Valid @RequestBody Usuario usuario) {
-        try {
-            Usuario salvo = usuarioService.salvar(usuario);
-            SuccessResponse<Usuario> successResponse = new SuccessResponse<>(HttpStatus.CREATED.value(), "Usuario criado com sucesso !", salvo);
-            return new ResponseEntity<>(successResponse, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            ErroResponse errorResponse = new ErroResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping
-    public List<Usuario> listarUsuarios() {
-        return usuarioService.listarUsuarios();
+    public ResponseEntity<SuccessResponseDTO<UsuarioDTO>> criarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDTO criado = usuarioService.criarUsuario(usuarioDTO);
+        SuccessResponseDTO<UsuarioDTO> response = new SuccessResponseDTO<>(HttpStatus.CREATED.value(), "Criado com sucesso!", criado);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscarUsuarioPorId(@PathVariable Long id) {
-        Usuario usuario = usuarioService.buscarPorId(id);
-       SuccessResponse<Usuario> response = new SuccessResponse<>(HttpStatus.OK.value(), "Usuario encontrado !", usuario);
-       return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<SuccessResponseDTO<UsuarioDTO>> buscarUsuarioPorId(@PathVariable Long id) {
+        UsuarioDTO usuarioDTO = usuarioService.buscarUsuarioPorId(id);
+        SuccessResponseDTO<UsuarioDTO> response = new SuccessResponseDTO<>(HttpStatus.OK.value(), "Valores retornados com sucesso!", usuarioDTO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUsuario(@PathVariable Long id) {
-        usuarioService.removerUsaurio(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @GetMapping
+    public ResponseEntity<SuccessResponseDTO<PageInfoDTO<UsuarioDTO>>> listarUsuarios(Pageable pageable) {
+        Page<UsuarioDTO> paginatedResult = usuarioService.listarUsuarios(pageable);
+        PageInfoDTO<UsuarioDTO> pageInfo = new PageInfoDTO<>(
+                paginatedResult.getContent(),
+                paginatedResult.getTotalPages(),
+                paginatedResult.getTotalElements()
+        );
+        SuccessResponseDTO<PageInfoDTO<UsuarioDTO>> response = new SuccessResponseDTO<>(HttpStatus.OK.value(), "Usuários retornados com sucesso!", pageInfo);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> alterarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
-        usuario.setUsuarioId(id);
-        Usuario atualizado = usuarioService.atualizarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(atualizado);
+    public ResponseEntity<SuccessResponseDTO<UsuarioDTO>> alterarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioDTO usuarioDTO) {
+        usuarioDTO.setUsuarioId(id);
+        UsuarioDTO atualizado = usuarioService.alterarUsuario(usuarioDTO);
+        SuccessResponseDTO<UsuarioDTO> response = new SuccessResponseDTO<>(HttpStatus.OK.value(), "Atualizado com sucesso!", atualizado);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponseDTO<UsuarioDTO>> deletarUsuario(@PathVariable Long id) {
+        UsuarioDTO deletado = usuarioService.deletarUsuario(id);
+        SuccessResponseDTO<UsuarioDTO> response = new SuccessResponseDTO<>(HttpStatus.OK.value(), "Deletado com sucesso!", deletado);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

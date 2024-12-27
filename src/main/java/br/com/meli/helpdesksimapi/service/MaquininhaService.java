@@ -1,52 +1,51 @@
 package br.com.meli.helpdesksimapi.service;
 
+import br.com.meli.helpdesksimapi.dto.MaquininhaDTO;
 import br.com.meli.helpdesksimapi.exception.ResourceNotFoundException;
+import br.com.meli.helpdesksimapi.mapper.MaquininhaMapper;
 import br.com.meli.helpdesksimapi.model.Maquininha;
 import br.com.meli.helpdesksimapi.repository.MaquininhaRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
+@RequiredArgsConstructor
 public class MaquininhaService {
 
-    @Autowired
-    private MaquininhaRepository maquininhaRepository;
+    private final MaquininhaRepository maquininhaRepository;
 
-    @Transactional
-    public Maquininha criarMaquininha(Maquininha maquininha){
-        verificarSerialNumber(maquininha.getSerialNumber());
-        return maquininhaRepository.save(maquininha);
+    public MaquininhaDTO criarMaquininha(MaquininhaDTO maquininhaDTO) {
+        Maquininha maquininha = MaquininhaMapper.toEntity(maquininhaDTO);
+        Maquininha criada = maquininhaRepository.save(maquininha);
+        return MaquininhaMapper.toDTO(criada);
     }
 
-    public List<Maquininha> listarMaquininhas() {
-        return maquininhaRepository.findAll();
+    public Page<MaquininhaDTO> listarMaquininhas(Pageable pageable) {
+        return maquininhaRepository.findAll(pageable)
+                .map(MaquininhaMapper::toDTO);
     }
 
-    public Maquininha buscarMaquininhaPorId(Long id) {
-        return maquininhaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Maquininha com ID " + id + " não encontrado"));
+    public MaquininhaDTO buscarMaquininhaPorId(Long id) {
+        Maquininha maquininha = maquininhaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Maquininha com o ID " + id + " não encontrada"));
+        return MaquininhaMapper.toDTO(maquininha);
     }
 
-    public Maquininha alterarMaquinha(Maquininha maquininha) {
-        if(!maquininhaRepository.existsById(maquininha.getDeviceId())){
-            throw new ResourceNotFoundException("Maquininha com ID " + maquininha.getDeviceId()+ " não encontrado para atualização");
+    public MaquininhaDTO alterarMaquininha(MaquininhaDTO maquininhaDTO) {
+        if (!maquininhaRepository.existsById(maquininhaDTO.getDeviceId())) {
+            throw new ResourceNotFoundException("Maquininha com o ID " + maquininhaDTO.getDeviceId() + " não encontrada para alterar");
         }
-        return maquininhaRepository.save(maquininha);
+        Maquininha maquininha = MaquininhaMapper.toEntity(maquininhaDTO);
+        Maquininha atualizada = maquininhaRepository.save(maquininha);
+        return MaquininhaMapper.toDTO(atualizada);
     }
 
-    public void deletarMaquininha(Long id) {
-        if (!maquininhaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Maquininha com ID " + id + " não encontrado");
-        }
+    public MaquininhaDTO deletarMaquininha(Long id) {
+        Maquininha maquininha = maquininhaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Maquininha com o ID " + id + " não encontrada"));
         maquininhaRepository.deleteById(id);
-    }
-
-    private void verificarSerialNumber(String serialNumber) {
-        if (maquininhaRepository.findBySerialNumber(serialNumber).isPresent()) {
-            throw new IllegalArgumentException("O número serial já existe.");
-        }
+        return MaquininhaMapper.toDTO(maquininha);
     }
 }
