@@ -19,7 +19,7 @@ Bem-vindo ao Simulador de Help Desk, uma API desenvolvida em Java usando Spring 
 
 ## Diagrama entidade-relacionamento (ER)
 
-![Diagrama ER](./DEr.PNG)
+![Diagrama ER](./DER.PNG)
 
 ## Tecnologias Utilizadas
 
