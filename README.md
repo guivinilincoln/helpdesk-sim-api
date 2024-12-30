@@ -5,7 +5,21 @@ Bem-vindo ao Simulador de Help Desk, uma API desenvolvida em Java usando Spring 
 ## Funcionalidades
 
 - Receber requisições "ping" e retornar "pong" como resposta, funcionando como um endpoint de saúde.
-- [Adicione aqui outras funcionalidades quando implementadas]
+- Receber requisições "ping" e retornar "pong" como resposta, funcionando como um endpoint de saúde.
+- Criar um novo atendente.
+- Buscar um atendente por ID.
+- Listar todos os atendentes com paginação.
+- Alterar os dados de um atendente existente.
+-  Deletar um atendente por ID.
+-  Criar um novo chamado.
+-  Buscar um chamado por ID.
+-  Listar todos os chamados com paginação.
+-  Alterar os dados de um chamado existente.
+-  Deletar um chamado por ID.
+
+## Diagrama entidade-relacionamento (ER)
+
+![Diagrama ER](./DER.png)
 
 ## Tecnologias Utilizadas
 
@@ -52,7 +66,11 @@ Bem-vindo ao Simulador de Help Desk, uma API desenvolvida em Java usando Spring 
     ```bash
     curl http://localhost:8080/ping
     ```
-
+## Para testar a API
+- Baixe e instale o Postman ou Insomnia.
+- Importe o arquivo helpdesk-simulador-api.postman_collection.json para o Postman.
+- Execute as requisições para testar a API.
+- Você também pode acessar a documentação da API em http://localhost:8080/swagger-ui.html. (Pendente)
 
 ## Contribuição
 1. **Fork o projeto.**

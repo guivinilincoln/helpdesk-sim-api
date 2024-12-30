@@ -2,19 +2,18 @@ package br.com.meli.helpdesksimapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class AtendenteDTO {
-    private Long atendenteId;
+@AllArgsConstructor
+public class BalcaoDTO {
+    private Long balcaoId;
 
-    @NotNull(message = "O nome não pode ser nulo")
+    @NotNull(message = "O nome do balcão não deve ser nulo")
     @NotBlank(message = "O nome não pode ser nulo ou vazio")
-    @Pattern(regexp = "^[\\p{L}\\p{M}' \\.\\-]+$", message = "O nome deve conter apenas letras e espaços")
-    private String nome;
+    private String nomeBalcao;
+    private AtendenteDTO atendente;
 }

@@ -1,55 +1,63 @@
 package br.com.meli.helpdesksimapi.controller;
 
-import br.com.meli.helpdesksimapi.dto.SuccessResponse;
-import br.com.meli.helpdesksimapi.model.Balcao;
-import br.com.meli.helpdesksimapi.repository.BalcaoRepository;
+import br.com.meli.helpdesksimapi.dto.BalcaoDTO;
+import br.com.meli.helpdesksimapi.dto.PageInfoDTO;
+import br.com.meli.helpdesksimapi.dto.SuccessResponseDTO;
 import br.com.meli.helpdesksimapi.service.BalcaoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/balcoes")
+@RequestMapping("/v1/api/balcoes")
+@RequiredArgsConstructor
 public class BalcaoController {
 
-    @Autowired
-    private BalcaoService balcaoService;
+    private final BalcaoService balcaoService;
 
-    @GetMapping
-    public List<Balcao> listarBalcoes() {
-        return balcaoService.listarBalcoes();
+    @PostMapping
+    public ResponseEntity<SuccessResponseDTO<BalcaoDTO>> criarBalcao(@Valid @RequestBody BalcaoDTO balcaoDTO) {
+        BalcaoDTO criado = balcaoService.criarBalcao(balcaoDTO);
+        SuccessResponseDTO<BalcaoDTO> response = new SuccessResponseDTO<>(HttpStatus.CREATED.value(), "Criado com sucesso!", criado);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SuccessResponse> buscarPorId(@PathVariable Long id) {
-        Balcao balcao = balcaoService.buscarBalcaoPorId(id);
-        SuccessResponse<Balcao> response = new SuccessResponse<>(HttpStatus.OK.value(), "Valores retornados com sucesso!", balcao);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<SuccessResponseDTO<BalcaoDTO>> buscarBalcaoPorId(@PathVariable Long id) {
+        BalcaoDTO balcaoDTO = balcaoService.buscarBalcaoPorId(id);
+        SuccessResponseDTO<BalcaoDTO> response = new SuccessResponseDTO<>(HttpStatus.OK.value(), "Valores retornados com sucesso!", balcaoDTO);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<SuccessResponse> salvarBalcao(@Valid @RequestBody Balcao balcao) {
-        Balcao criar = balcaoService.criarBalcao(balcao);
-        SuccessResponse<Balcao> response = new SuccessResponse<>(HttpStatus.CREATED.value(), "Criado com sucesso!", criar);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Balcao> deletarBalcao(@PathVariable Long id) {
-       balcaoService.deletarBalcao(id);
-       return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @GetMapping
+    public ResponseEntity<SuccessResponseDTO<PageInfoDTO<BalcaoDTO>>> listarBalcoes(Pageable pageable) {
+        Page<BalcaoDTO> paginatedResult = balcaoService.listarBalcoes(pageable);
+        PageInfoDTO<BalcaoDTO> pageInfo = new PageInfoDTO<>(
+                paginatedResult.getContent(),
+                paginatedResult.getTotalPages(),
+                paginatedResult.getTotalElements()
+        );
+        SuccessResponseDTO<PageInfoDTO<BalcaoDTO>> response = new SuccessResponseDTO<>(HttpStatus.OK.value(), "Balcoes retornados com sucesso!", pageInfo);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Balcao> alterarBalcao(@PathVariable Long id, @RequestBody Balcao balcao) {
-        balcao.setBalcaoId(id);
-        Balcao atualizar = balcaoService.alterarBalcao(balcao);
-        return ResponseEntity.status(HttpStatus.OK.value()).body(atualizar);
+    public ResponseEntity<SuccessResponseDTO<BalcaoDTO>> alterarBalcao(@PathVariable Long id, @Valid @RequestBody BalcaoDTO balcaoDTO) {
+        balcaoDTO.setBalcaoId(id);
+        BalcaoDTO atualizado = balcaoService.alterarBalcao(balcaoDTO);
+        SuccessResponseDTO<BalcaoDTO> response = new SuccessResponseDTO<>(HttpStatus.OK.value(), "Atualizado com sucesso!", atualizado);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SuccessResponseDTO<BalcaoDTO>> deletarBalcao(@PathVariable Long id) {
+        BalcaoDTO deletado = balcaoService.deletarBalcao(id);
+        SuccessResponseDTO<BalcaoDTO> response = new SuccessResponseDTO<>(HttpStatus.OK.value(), "Deletado com sucesso!", deletado);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

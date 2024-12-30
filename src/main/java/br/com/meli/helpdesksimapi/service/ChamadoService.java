@@ -1,105 +1,103 @@
 package br.com.meli.helpdesksimapi.service;
 
+import br.com.meli.helpdesksimapi.dto.ChamadoDTO;
+import br.com.meli.helpdesksimapi.exception.ResourceNotFoundException;
+import br.com.meli.helpdesksimapi.mapper.ChamadoMapper;
+import br.com.meli.helpdesksimapi.mapper.MaquininhaMapper;
 import br.com.meli.helpdesksimapi.model.Balcao;
 import br.com.meli.helpdesksimapi.model.Chamado;
 import br.com.meli.helpdesksimapi.model.Maquininha;
 import br.com.meli.helpdesksimapi.model.Status;
 import br.com.meli.helpdesksimapi.repository.BalcaoRepository;
 import br.com.meli.helpdesksimapi.repository.ChamadoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.meli.helpdesksimapi.repository.MaquininhaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ChamadoService {
 
-    @Autowired
-    private ChamadoRepository chamadoRepository;
+    private final ChamadoRepository chamadoRepository;
+    private final BalcaoRepository balcaoRepository;
+    private final MaquininhaRepository maquininhaRepository;
 
-    @Autowired
-    private BalcaoRepository balcaoRepository;
+    public ChamadoDTO criarChamado(ChamadoDTO chamadoDTO) {
+        Chamado chamado = ChamadoMapper.toEntity(chamadoDTO);
 
-    @Autowired
-    private MaquininhaService maquininhaService;
-
-
-    public Chamado criarChamado(Chamado chamado) throws AccessDeniedException {
-        // Verificar se a Maquininha existe
-        Maquininha maquininha = maquininhaService.buscarMaquininhaPorId(chamado.getMaquininha().getDeviceId());
-        if (maquininha == null) {
-            throw new IllegalArgumentException("A Maquininha especificada não existe.");
-        }
+        Maquininha maquininha = verificarMaquininha(chamado);
+        verificarChamadosExistentes(chamado, maquininha);
         chamado.setMaquininha(maquininha);
 
-        // Verificar se o próprio usuário já tem um chamado aberto para este número de série
+        Balcao balcaoDisponivel = encontrarBalcaoDisponivel();
+        if (balcaoDisponivel != null) {
+            chamado.setBalcao(balcaoDisponivel);
+        }
+
+        Chamado salvo = chamadoRepository.save(chamado);
+        return ChamadoMapper.toDTO(salvo);
+    }
+
+    public Page<ChamadoDTO> listarChamados(Pageable pageable) {
+        return chamadoRepository.findAll(pageable)
+                .map(ChamadoMapper::toDTO);
+    }
+
+    public ChamadoDTO buscarChamadoPorId(Long id) {
+        Chamado chamado = chamadoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Chamado com o ID " + id + " não encontrado"));
+        return ChamadoMapper.toDTO(chamado);
+    }
+
+    public ChamadoDTO alterarChamado(ChamadoDTO chamadoDTO) {
+        if (!chamadoRepository.existsById(chamadoDTO.getChamadoId())) {
+            throw new ResourceNotFoundException("Chamado com o ID " + chamadoDTO.getChamadoId() + " não encontrado para alterar");
+        }
+        Chamado chamado = ChamadoMapper.toEntity(chamadoDTO);
+        Chamado salvo = chamadoRepository.save(chamado);
+        return ChamadoMapper.toDTO(salvo);
+    }
+
+    public ChamadoDTO deletarChamado(Long id) {
+        Chamado chamado = chamadoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Chamado com o ID " + id + " não encontrado"));
+        chamadoRepository.deleteById(id);
+        return ChamadoMapper.toDTO(chamado);
+    }
+
+    private Maquininha verificarMaquininha(Chamado chamado) {
+        Maquininha maquininha = maquininhaRepository.findById(chamado.getMaquininha().getDeviceId())
+                .orElseThrow(() -> new IllegalArgumentException("A Maquininha especificada não existe."));
+        return maquininha;
+    }
+
+    private void verificarChamadosExistentes(Chamado chamado, Maquininha maquininha) {
         List<Chamado> chamadosParaUsuarioAtual = chamadoRepository.findByUsuarioAndMaquininhaAndStatusNot(
-                chamado.getUsuario(),
-                maquininha,
-                Status.CONCLUIDO
-        );
+                chamado.getUsuario(), maquininha, Status.CONCLUIDO);
 
         if (!chamadosParaUsuarioAtual.isEmpty()) {
             throw new IllegalArgumentException("Já existe um chamado aberto para este usuário e número de série.");
         }
 
-        // Verificar chamados não concluídos para o mesmo serialNumber de outro usuário
         List<Chamado> chamadosParaSerialNumber = chamadoRepository.findByMaquininhaSerialNumberAndStatusNot(
-                maquininha.getSerialNumber(),
-                Status.CONCLUIDO
-        );
+                maquininha.getSerialNumber(), Status.CONCLUIDO);
 
         for (Chamado c : chamadosParaSerialNumber) {
             if (!c.getUsuario().equals(chamado.getUsuario())) {
-                // Se há chamado em andamento para outro usuário
-                throw new AccessDeniedException("Outro usuário já possui um chamado em atendimento para este número serial.");
+                throw new IllegalArgumentException("Outro usuário já possui um chamado em atendimento para este número serial.");
             }
         }
+    }
 
-
-        if (chamado.getDataChamado() == null) {
-            chamado.setDataChamado(new Date());
-        }
-        Balcao balcaoDisponivel = balcaoRepository.findAll().stream()
+    private Balcao encontrarBalcaoDisponivel() {
+        return balcaoRepository.findAll().stream()
                 .filter(balcao -> chamadoRepository.countByBalcaoAndStatusNot(balcao, Status.CONCLUIDO) < 5)
                 .findFirst()
                 .orElse(null);
-        if (balcaoDisponivel != null) {
-            chamado.setBalcao(balcaoDisponivel);
-            chamado.setStatus(Status.ABERTO);
-            return chamadoRepository.save(chamado);
-        } else {
-            // Coloque o chamado em espera
-            chamado.setStatus(Status.EM_ESPERA);
-            return chamadoRepository.save(chamado);
-        }
-    }
-
-    public List<Chamado> buscarTodosChamados() {
-        return chamadoRepository.findAll();
-    }
-
-    public Chamado buscarChamadoPorId(Long id) {
-        Optional<Chamado> chamado = chamadoRepository.findById(id);
-        return chamado.orElse(null);
-    }
-
-    public Page<Chamado> buscarChamadosPaginados(int page, int size){
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return chamadoRepository.findAll(pageRequest);
-    }
-
-    public Page<Chamado> buscarChamadoPorCustomerId(String customerId, int page, int size){
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return chamadoRepository.findByUsuarioCustomerId(customerId, pageRequest);
-    }
-
-    public int countChamadosAtivos(Balcao balcao) {
-        return chamadoRepository.countByBalcaoAndStatusNot(balcao, Status.CONCLUIDO);
     }
 }
