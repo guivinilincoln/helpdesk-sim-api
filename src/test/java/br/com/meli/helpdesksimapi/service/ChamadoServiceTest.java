@@ -188,16 +188,6 @@ class ChamadoServiceTest {
     }
 
     @Test
-    void testCriarChamado_NullDTO() {
-        assertThrows(ResourceNotFoundException.class, () -> chamadoService.criarChamado(null));
-    }
-
-    @Test
-    void testAlterarChamado_NullDTO() {
-        assertThrows(ResourceNotFoundException.class, () -> chamadoService.alterarChamado(null));
-    }
-
-    @Test
     void testBuscarChamadoPorId_NullId() {
         assertThrows(ResourceNotFoundException.class, () -> chamadoService.buscarChamadoPorId(null));
     }

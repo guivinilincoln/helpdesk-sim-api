@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.meli.helpdesksimapi.controller.AtendenteControllerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-01-02T17:32:44" hostname="BR000C2L56N41C4" time="0.035">
+  <properties/>
+  <testcase name="alterarAtendente()" classname="br.com.meli.helpdesksimapi.controller.AtendenteControllerTest" time="0.028"/>
+  <testcase name="deletarAtendente()" classname="br.com.meli.helpdesksimapi.controller.AtendenteControllerTest" time="0.002"/>
+  <testcase name="buscarPorId()" classname="br.com.meli.helpdesksimapi.controller.AtendenteControllerTest" time="0.001"/>
+  <testcase name="criarAtendente()" classname="br.com.meli.helpdesksimapi.controller.AtendenteControllerTest" time="0.002"/>
+  <testcase name="listarAtendentes()" classname="br.com.meli.helpdesksimapi.controller.AtendenteControllerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

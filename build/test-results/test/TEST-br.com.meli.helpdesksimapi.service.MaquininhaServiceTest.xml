@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-01-02T17:32:44" hostname="BR000C2L56N41C4" time="0.006">
+  <properties/>
+  <testcase name="testDeletarMaquininhaNotFound()" classname="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" time="0.001"/>
+  <testcase name="testBuscarMaquininhaPorIdNotFound()" classname="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" time="0.0"/>
+  <testcase name="testDeletarMaquininha()" classname="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" time="0.001"/>
+  <testcase name="testCriarMaquininha()" classname="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" time="0.0"/>
+  <testcase name="testAlterarMaquininha()" classname="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" time="0.001"/>
+  <testcase name="testBuscarMaquininhaPorId()" classname="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" time="0.0"/>
+  <testcase name="testAlterarMaquininhaNotFound()" classname="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" time="0.001"/>
+  <testcase name="testListarMaquininhas()" classname="br.com.meli.helpdesksimapi.service.MaquininhaServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

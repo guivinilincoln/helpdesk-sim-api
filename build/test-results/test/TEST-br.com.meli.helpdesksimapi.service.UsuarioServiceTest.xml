@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-01-02T17:32:44" hostname="BR000C2L56N41C4" time="0.029">
+  <properties/>
+  <testcase name="testCriarUsuario()" classname="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" time="0.024"/>
+  <testcase name="testDeletarUsuario()" classname="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" time="0.0"/>
+  <testcase name="testBuscarUsuarioPorId()" classname="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" time="0.001"/>
+  <testcase name="testAlterarUsuario()" classname="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" time="0.001"/>
+  <testcase name="testDeletarUsuarioNotFound()" classname="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" time="0.0"/>
+  <testcase name="testBuscarUsuarioPorIdNotFound()" classname="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" time="0.001"/>
+  <testcase name="testAlterarUsuarioNotFound()" classname="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" time="0.0"/>
+  <testcase name="testListarUsuarios()" classname="br.com.meli.helpdesksimapi.service.UsuarioServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

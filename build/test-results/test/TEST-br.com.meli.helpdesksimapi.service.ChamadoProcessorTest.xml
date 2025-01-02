@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.meli.helpdesksimapi.service.ChamadoProcessorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-01-02T17:32:44" hostname="BR000C2L56N41C4" time="0.005">
+  <properties/>
+  <testcase name="testGerenciarFilaDeEspera()" classname="br.com.meli.helpdesksimapi.service.ChamadoProcessorTest" time="0.003"/>
+  <testcase name="testMoveAbertosParaEmAtendimento()" classname="br.com.meli.helpdesksimapi.service.ChamadoProcessorTest" time="0.001"/>
+  <testcase name="testMoveEmAtendimentoParaConcluido()" classname="br.com.meli.helpdesksimapi.service.ChamadoProcessorTest" time="0.001"/>
+  <system-out><![CDATA[Mudou para EM_ATENDIMENTO: ID = 1
+Mudou para CONCLUIDO: ID = 1
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

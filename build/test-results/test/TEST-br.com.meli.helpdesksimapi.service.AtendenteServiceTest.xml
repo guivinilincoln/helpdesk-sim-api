@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2025-01-02T17:32:44" hostname="BR000C2L56N41C4" time="0.035">
+  <properties/>
+  <testcase name="testAlterarAtendente()" classname="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" time="0.028"/>
+  <testcase name="testDeletarAtendente()" classname="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" time="0.002"/>
+  <testcase name="testDeletarAtendenteNotFound()" classname="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" time="0.001"/>
+  <testcase name="testBuscarAtendentePorIdNotFound()" classname="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" time="0.001"/>
+  <testcase name="testBuscarAtendentePorId()" classname="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" time="0.001"/>
+  <testcase name="testCriarAtendente()" classname="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" time="0.0"/>
+  <testcase name="testListarAtendentes()" classname="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" time="0.0"/>
+  <testcase name="testAlterarAtendenteNotFound()" classname="br.com.meli.helpdesksimapi.service.AtendenteServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

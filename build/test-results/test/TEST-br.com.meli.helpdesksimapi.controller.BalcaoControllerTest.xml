@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="br.com.meli.helpdesksimapi.controller.BalcaoControllerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-01-02T17:32:44" hostname="BR000C2L56N41C4" time="0.022">
+  <properties/>
+  <testcase name="testListarBalcoes()" classname="br.com.meli.helpdesksimapi.controller.BalcaoControllerTest" time="0.018"/>
+  <testcase name="testAlterarBalcao()" classname="br.com.meli.helpdesksimapi.controller.BalcaoControllerTest" time="0.0"/>
+  <testcase name="testCriarBalcao()" classname="br.com.meli.helpdesksimapi.controller.BalcaoControllerTest" time="0.0"/>
+  <testcase name="testDeletarBalcao()" classname="br.com.meli.helpdesksimapi.controller.BalcaoControllerTest" time="0.0"/>
+  <testcase name="testBuscarBalcaoPorId()" classname="br.com.meli.helpdesksimapi.controller.BalcaoControllerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
